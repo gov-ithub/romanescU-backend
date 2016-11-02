@@ -1,12 +1,14 @@
 package romanescu.backend.application;
 
+import java.util.Map;
+
 public class Document {
 	private final String id;
 	private final String index;
 	private final String type;
-	private final String source;
+	private final Map<String, Object> source;
 
-	public Document(String id, String index, String type, String source) {
+	public Document(String id, String index, String type, Map<String, Object> source) {
 		this.id = id;
 		this.index = index;
 		this.type = type;
@@ -25,7 +27,7 @@ public class Document {
 		return type;
 	}
 
-	public String getSource() {
+	public Map<String, Object> getSource() {
 		return source;
 	}
 

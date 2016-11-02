@@ -30,7 +30,7 @@ public class ElasticsearchController {
 			@PathVariable(value="type") String type,
 			@PathVariable(value="id") String id) {
 		GetResponse response = client.prepareGet(index, type, id).get();
-		return new Document(response.getId(), response.getIndex(), response.getType(), response.getSourceAsString());
+		return new Document(response.getId(), response.getIndex(), response.getType(), response.getSource());
 	}
 	
 	@RequestMapping(value = apiTemplate + "{index}/_create", method=RequestMethod.POST)
@@ -74,7 +74,7 @@ public class ElasticsearchController {
 		List<Document> documentList = new ArrayList<Document>();
 		while (hitIterator.hasNext()) {
 		    SearchHit hit = hitIterator.next();
-		    documentList.add(new Document(hit.getId(), hit.getIndex(), hit.getType(), hit.getSourceAsString()));
+		    documentList.add(new Document(hit.getId(), hit.getIndex(), hit.getType(), hit.getSource()));
 		}
 		return documentList;
 	}
