@@ -3,10 +3,13 @@ package romanescu.backend.application;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import java.util.Properties;
+
 import javax.annotation.Resource;
 
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.common.transport.TransportAddress;
 import org.springframework.boot.SpringApplication;
@@ -20,6 +23,7 @@ import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 @SpringBootApplication
 @PropertySource(value = "classpath:elasticsearch.properties")
 public class Application {
+	private Properties properties;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -30,13 +34,25 @@ public class Application {
 
 	@Bean
 	public Client client() throws NumberFormatException, UnknownHostException {
-		TransportClient client = TransportClient.builder().build();
+		TransportClient client = TransportClient.builder().settings(settings()).build();
 		TransportAddress address = new InetSocketTransportAddress(InetAddress.getByName(environment.getProperty("elasticsearch.host")),
 				Integer.parseInt(environment.getProperty("elasticsearch.port")));
 		
 		client.addTransportAddress(address);
 		return client;
 	}
+
+	private Settings settings() {
+		if (properties != null) {
+			return Settings.builder().put(properties).build();
+		}
+		return Settings.builder()
+				.put("cluster.name", environment.getProperty("elasticsearch.cluster"))
+				.put("client.transport.sniff", true)
+				.put("client.transport.ignore_cluster_name", false)
+				.build();
+	}	
+
 
 	@Bean
 	public ElasticsearchOperations elasticsearchTemplate() throws NumberFormatException, UnknownHostException {
