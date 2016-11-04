@@ -31,7 +31,7 @@ public class Application {
 	@Bean
 	public Client client() throws NumberFormatException, UnknownHostException {
 		TransportClient client = TransportClient.builder().build();
-		TransportAddress address = new InetSocketTransportAddress(environment.getProperty("elasticsearch.host"),
+		TransportAddress address = new InetSocketTransportAddress(InetAddress.getByName(environment.getProperty("elasticsearch.host")),
 				Integer.parseInt(environment.getProperty("elasticsearch.port")));
 		
 		client.addTransportAddress(address);
