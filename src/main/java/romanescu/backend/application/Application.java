@@ -47,10 +47,12 @@ public class Application {
 			return Settings.builder().put(properties).build();
 		}
 		return Settings.builder()
-				.put("cluster.name", environment.getProperty("elasticsearch.cluster"))
-				.put("client.transport.sniff", true)
-				.put("client.transport.ignore_cluster_name", false)
-				.build();
+			.put("cluster.name", environment.getProperty("elasticsearch.cluster"))
+			.put("node.client", true)
+			.put("client.transport.sniff", true)
+			.put("client.transport.ignore_cluster_name", false)
+			.build();
+
 	}	
 
 
