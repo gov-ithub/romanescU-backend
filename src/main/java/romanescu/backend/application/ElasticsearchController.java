@@ -19,13 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ElasticsearchController {
 
-	private static final String apiTemplate = "/api/v0/";
+	private static final String API_PREFIX = "/api/v0/";
+
 	@Autowired
 	private Client client;
 	@Autowired
 	private ElasticsearchTemplate elasticSearchTemplate;
 	
-	@RequestMapping(apiTemplate + "getDocument/{index}/{type}/{id}")
+	@RequestMapping(API_PREFIX + "getDocument/{index}/{type}/{id}")
 	public Document getById(@PathVariable(value="index") String index, 
 			@PathVariable(value="type") String type,
 			@PathVariable(value="id") String id) {
@@ -33,7 +34,7 @@ public class ElasticsearchController {
 		return new Document(response.getId(), response.getIndex(), response.getType(), response.getSource());
 	}
 	
-	@RequestMapping(value = apiTemplate + "{index}/_create", method=RequestMethod.POST)
+	@RequestMapping(value = API_PREFIX + "{index}/_create", method=RequestMethod.POST)
 	public IndexCreated createIndex(@PathVariable(value="index") String index) {
 		String indexCreated = "true";
 		if(!elasticSearchTemplate.indexExists(index)) {
@@ -44,7 +45,7 @@ public class ElasticsearchController {
 		return new IndexCreated(indexCreated);
 	}
 	
-	@RequestMapping(value = apiTemplate + "indexDocument/{index}/{type}/{id}", method=RequestMethod.POST)
+	@RequestMapping(value = API_PREFIX + "indexDocument/{index}/{type}/{id}", method=RequestMethod.POST)
 	public void indexDocument(@PathVariable(value="index") String index,
 			@PathVariable(value="type") String type,
 			@PathVariable(value="id") String id,
@@ -52,14 +53,14 @@ public class ElasticsearchController {
 		client.prepareIndex(index, type, id).setSource(source).get();
 	}
 	
-	@RequestMapping(value = apiTemplate + "deleteDocument/{index}/{type}/{id}", method=RequestMethod.DELETE)
+	@RequestMapping(value = API_PREFIX + "deleteDocument/{index}/{type}/{id}", method=RequestMethod.DELETE)
 	public void deleteDocument(@PathVariable(value="index") String index,
 			@PathVariable(value="type") String type,
 			@PathVariable(value="id") String id) {
 		client.prepareDelete(index, type, id).get();
 	}
 	
-	@RequestMapping(value = apiTemplate + "updateDocument/{index}/{type}/{id}", method=RequestMethod.PATCH)
+	@RequestMapping(value = API_PREFIX + "updateDocument/{index}/{type}/{id}", method=RequestMethod.PATCH)
 	public void updateDocument(@PathVariable(value="index") String index,
 			@PathVariable(value="type") String type,
 			@PathVariable(value="id") String id,
@@ -67,7 +68,7 @@ public class ElasticsearchController {
 		client.prepareUpdate(index, type, id).setDoc(source).get();
 	}
 	
-	@RequestMapping(value = apiTemplate + "getDocuments/{index}/_all", method=RequestMethod.GET)
+	@RequestMapping(value = API_PREFIX + "getDocuments/{index}/_all", method=RequestMethod.GET)
 	public List<Document> getAllDocuments(@PathVariable(value="index") String index) {
 		SearchRequestBuilder requestBuilder = client.prepareSearch(index).setQuery(QueryBuilders.matchAllQuery());
 		SearchHitIterator hitIterator = new SearchHitIterator(requestBuilder);
