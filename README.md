@@ -15,7 +15,7 @@ Build Maven
 
 ## RUN
 
-> java -jar romanescu-api.jar
+> java -jar target/romanescu-api.jar
 
 
 
